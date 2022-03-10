@@ -2252,6 +2252,8 @@ class GlobalCommands(ScriptableObject):
 	)
 	def script_startWxInspectionTool(self, gesture):
 		if globalVars.appArgs.secure:
+			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+			ui.message(_("Not available in secure context"))
 			return
 		import wx.lib.inspection
 		wx.lib.inspection.InspectionTool().Show()
@@ -2286,6 +2288,8 @@ class GlobalCommands(ScriptableObject):
 	)
 	def script_log_markStartThenCopy(self, gesture):
 		if globalVars.appArgs.secure:
+			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+			ui.message(_("Not available in secure context"))
 			return
 		if log.fragmentStart is None:
 			if log.markFragmentStart():
@@ -2317,6 +2321,8 @@ class GlobalCommands(ScriptableObject):
 	)
 	def script_openUserConfigurationDirectory(self, gesture):
 		if globalVars.appArgs.secure:
+			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+			ui.message(_("Not available in secure context"))
 			return
 		import systemUtils
 		systemUtils.openUserConfigurationDirectory()
@@ -2682,7 +2688,11 @@ class GlobalCommands(ScriptableObject):
 		gesture="kb:NVDA+control+z"
 	)
 	def script_activatePythonConsole(self,gesture):
-		if globalVars.appArgs.secure or config.isAppX:
+		if globalVars.appArgs.secure:
+			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+			ui.message(_("Not available in secure context"))
+			return
+		if config.isAppX:
 			return
 		import pythonConsole
 		if not pythonConsole.consoleUI:
