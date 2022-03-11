@@ -2693,6 +2693,9 @@ class GlobalCommands(ScriptableObject):
 			ui.message(_("Not available in secure context"))
 			return
 		if config.isAppX:
+			# Translators: Reported when an action cannot be performed because NVDA has been installed
+			# from the Windows Store.
+			ui.message(_("Not available in Windows Store version"))
 			return
 		import pythonConsole
 		if not pythonConsole.consoleUI:
