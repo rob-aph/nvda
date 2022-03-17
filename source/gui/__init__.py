@@ -420,6 +420,7 @@ class MainFrame(wx.Frame):
 		ProfilesDialog(gui.mainFrame).Show()
 		self.postPopup()
 
+
 class SysTrayIcon(wx.adv.TaskBarIcon):
 
 	def __init__(self, frame: MainFrame):
@@ -436,38 +437,8 @@ class SysTrayIcon(wx.adv.TaskBarIcon):
 			_("NVDA settings"))
 		self.Bind(wx.EVT_MENU, frame.onNVDASettingsCommand, item)
 		if not globalVars.appArgs.secure:
-			# TODO: This code should be moved out into a createSpeechDictsSubMenu function
-			subMenu_speechDicts = wx.Menu()
-			item = subMenu_speechDicts.Append(
-				wx.ID_ANY,
-				# Translators: The label for the menu item to open Default speech dictionary dialog.
-				_("&Default dictionary..."),
-				# Translators: The help text for the menu item to open Default speech dictionary dialog.
-				_("A dialog where you can set default dictionary by adding dictionary entries to the list")
-			)
-			self.Bind(wx.EVT_MENU, frame.onDefaultDictionaryCommand, item)
-			item = subMenu_speechDicts.Append(
-				wx.ID_ANY,
-				# Translators: The label for the menu item to open Voice specific speech dictionary dialog.
-				_("&Voice dictionary..."),
-				_(
-					# Translators: The help text for the menu item
-					# to open Voice specific speech dictionary dialog.
-					"A dialog where you can set voice-specific dictionary by adding"
-					" dictionary entries to the list"
-				)
-			)
-			self.Bind(wx.EVT_MENU, frame.onVoiceDictionaryCommand, item)
-			item = subMenu_speechDicts.Append(
-				wx.ID_ANY,
-				# Translators: The label for the menu item to open Temporary speech dictionary dialog.
-				_("&Temporary dictionary..."),
-				# Translators: The help text for the menu item to open Temporary speech dictionary dialog.
-				_("A dialog where you can set temporary dictionary by adding dictionary entries to the edit box")
-			)
-			self.Bind(wx.EVT_MENU, frame.onTemporaryDictionaryCommand, item)
 			# Translators: The label for a submenu under NvDA Preferences menu to select speech dictionaries.
-			menu_preferences.AppendSubMenu(subMenu_speechDicts, _("Speech &dictionaries"))
+			menu_preferences.AppendSubMenu(self._createSpeechDictsSubMenu(frame), _("Speech &dictionaries"))
 		if not globalVars.appArgs.secure:
 			# Translators: The label for the menu item to open Punctuation/symbol pronunciation dialog.
 			item = menu_preferences.Append(wx.ID_ANY, _("&Punctuation/symbol pronunciation..."))
@@ -602,6 +573,38 @@ class SysTrayIcon(wx.adv.TaskBarIcon):
 			# The NVDA menu didn't actually appear for some reason.
 			appModules.nvda.nvdaMenuIaIdentity = None
 		mainFrame.postPopup()
+
+	def _createSpeechDictsSubMenu(self, frame: wx.Frame) -> wx.Menu:
+		subMenu_speechDicts = wx.Menu()
+		item = subMenu_speechDicts.Append(
+			wx.ID_ANY,
+			# Translators: The label for the menu item to open Default speech dictionary dialog.
+			_("&Default dictionary..."),
+			# Translators: The help text for the menu item to open Default speech dictionary dialog.
+			_("A dialog where you can set default dictionary by adding dictionary entries to the list")
+		)
+		self.Bind(wx.EVT_MENU, frame.onDefaultDictionaryCommand, item)
+		item = subMenu_speechDicts.Append(
+			wx.ID_ANY,
+			# Translators: The label for the menu item to open Voice specific speech dictionary dialog.
+			_("&Voice dictionary..."),
+			_(
+				# Translators: The help text for the menu item
+				# to open Voice specific speech dictionary dialog.
+				"A dialog where you can set voice-specific dictionary by adding"
+				" dictionary entries to the list"
+			)
+		)
+		self.Bind(wx.EVT_MENU, frame.onVoiceDictionaryCommand, item)
+		item = subMenu_speechDicts.Append(
+			wx.ID_ANY,
+			# Translators: The label for the menu item to open Temporary speech dictionary dialog.
+			_("&Temporary dictionary..."),
+			# Translators: The help text for the menu item to open Temporary speech dictionary dialog.
+			_("A dialog where you can set temporary dictionary by adding dictionary entries to the edit box")
+		)
+		self.Bind(wx.EVT_MENU, frame.onTemporaryDictionaryCommand, item)
+		return subMenu_speechDicts
 
 
 def initialize():
