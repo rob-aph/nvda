@@ -30,6 +30,7 @@ from .message import (
 	# be cautious when removing
 	messageBox,
 )
+from . import blockAction
 from .speechDict import (
 	DefaultDictionaryDialog,
 	VoiceDictionaryDialog,
@@ -154,12 +155,8 @@ class MainFrame(wx.Frame):
 			# Translators: Message shown when current configuration cannot be saved such as when running NVDA from a CD.
 			messageBox(_("Could not save configuration - probably read only file system"),_("Error"),wx.OK | wx.ICON_ERROR)
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def _popupSettingsDialog(self, dialog, *args, **kwargs):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		self.prePopup()
 		try:
 			dialog(self, *args, **kwargs).Show()
@@ -172,26 +169,17 @@ class MainFrame(wx.Frame):
 
 		self.postPopup()
 
+	@blockAction.when(blockAction.Context.SECURE_MODE)
 	def onDefaultDictionaryCommand(self, evt):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-		else:
-			self._popupSettingsDialog(DefaultDictionaryDialog)
+		self._popupSettingsDialog(DefaultDictionaryDialog)
 
+	@blockAction.when(blockAction.Context.SECURE_MODE)
 	def onVoiceDictionaryCommand(self, evt):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-		else:
-			self._popupSettingsDialog(VoiceDictionaryDialog)
+		self._popupSettingsDialog(VoiceDictionaryDialog)
 
+	@blockAction.when(blockAction.Context.SECURE_MODE)
 	def onTemporaryDictionaryCommand(self, evt):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-		else:
-			self._popupSettingsDialog(TemporaryDictionaryDialog)
+		self._popupSettingsDialog(TemporaryDictionaryDialog)
 
 	def onExecuteUpdateCommand(self, evt):
 		if updateCheck and updateCheck.isPendingUpdate():
@@ -218,12 +206,8 @@ class MainFrame(wx.Frame):
 		if not globalVars.appArgs.secure and updateCheck and updateCheck.isPendingUpdate():
 			self.sysTrayIcon.menu.Insert(self.sysTrayIcon.installPendingUpdateMenuItemPos,self.sysTrayIcon.installPendingUpdateMenuItem)
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def onExitCommand(self, evt):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		if config.conf["general"]["askToExit"]:
 			self.prePopup()
 			d = ExitDialog(self)
@@ -282,12 +266,9 @@ class MainFrame(wx.Frame):
 	def onSpeechSymbolsCommand(self, evt):
 		self._popupSettingsDialog(SpeechSymbolsDialog)
 
+	@blockAction.when(blockAction.Context.SECURE_MODE)
 	def onInputGesturesCommand(self, evt):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-		else:
-			self._popupSettingsDialog(InputGesturesDialog)
+		self._popupSettingsDialog(InputGesturesDialog)
 
 	def onAboutCommand(self,evt):
 		# Translators: The title of the dialog to show about info for NVDA.
@@ -328,16 +309,11 @@ class MainFrame(wx.Frame):
 			pythonConsole.initialize()
 		pythonConsole.activate()
 
+	@blockAction.when(
+		blockAction.Context.MODAL_DIALOG_OPEN,
+		blockAction.Context.SECURE_MODE
+	)
 	def onAddonsManagerCommand(self,evt):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-			return
 		self.prePopup()
 		from .addonGui import AddonsDialog
 		d=AddonsDialog(gui.mainFrame)
@@ -351,33 +327,21 @@ class MainFrame(wx.Frame):
 		globalPluginHandler.reloadGlobalPlugins()
 		NVDAObject.clearDynamicClassCache()
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def onCreatePortableCopyCommand(self,evt):
-		if isModalMessageBoxActive():
-			# TranslQators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		self.prePopup()
 		import gui.installerGui
 		d=gui.installerGui.PortableCreaterDialog(gui.mainFrame)
 		d.Show()
 		self.postPopup()
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def onInstallCommand(self, evt):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		from gui import installerGui
 		installerGui.showInstallGui()
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def onRunCOMRegistrationFixesCommand(self, evt):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		if messageBox(
 			# Translators: A message to warn the user when starting the COM Registration Fixing tool 
 			_("You are about to run the COM Registration Fixing tool. This tool will try to fix common system problems that stop NVDA from being able to access content in many programs including Firefox and Internet Explorer. This tool must make changes to the System registry and therefore requires administrative access. Are you sure you wish to proceed?"),
@@ -409,12 +373,8 @@ class MainFrame(wx.Frame):
 			wx.OK
 		)
 
+	@blockAction.when(blockAction.Context.MODAL_DIALOG_OPEN)
 	def onConfigProfilesCommand(self, evt):
-		if isModalMessageBoxActive():
-			# Translators: Reported when an action cannot be performed because NVDA is waiting
-			# for a response from a modal dialog
-			ui.message(_("Not available while dialog response required"))
-			return
 		self.prePopup()
 		from .configProfiles import ProfilesDialog
 		ProfilesDialog(gui.mainFrame).Show()

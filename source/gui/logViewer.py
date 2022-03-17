@@ -6,11 +6,12 @@
 """Provides functionality to view the NVDA log.
 """
 
-import ui
 import wx
 import globalVars
 import gui
 import gui.contextHelp
+from gui import blockAction
+
 
 #: The singleton instance of the log viewer UI.
 logViewer = None
@@ -102,17 +103,15 @@ class LogViewer(
 			return
 		evt.Skip()
 
+
+# The log might expose sensitive information and the Save As dialog in the Log Viewer is a security risk.
+@blockAction.when(blockAction.Context.SECURE_MODE)
 def activate():
 	"""Activate the log viewer.
 	If the log viewer has not already been created and opened, this will create and open it.
 	Otherwise, it will be brought to the foreground if possible.
 	"""
 	global logViewer
-	if globalVars.appArgs.secure:
-		# The log might expose sensitive information and the Save As dialog in the Log Viewer is a security risk.
-		# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-		ui.message(_("Not available in secure context"))
-		return
 	if not logViewer:
 		logViewer = LogViewer(gui.mainFrame)
 	# Check if log was properly initialized

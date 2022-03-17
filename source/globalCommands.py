@@ -2250,11 +2250,8 @@ class GlobalCommands(ScriptableObject):
 		),
 		category=SCRCAT_TOOLS
 	)
+	@gui.blockAction.when(gui.blockAction.Context.SECURE_MODE)
 	def script_startWxInspectionTool(self, gesture):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-			return
 		import wx.lib.inspection
 		wx.lib.inspection.InspectionTool().Show()
 
@@ -2286,11 +2283,8 @@ class GlobalCommands(ScriptableObject):
 		category=SCRCAT_TOOLS,
 		gesture="kb:NVDA+control+shift+f1"
 	)
+	@gui.blockAction.when(gui.blockAction.Context.SECURE_MODE)
 	def script_log_markStartThenCopy(self, gesture):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-			return
 		if log.fragmentStart is None:
 			if log.markFragmentStart():
 				# Translators: Message when marking the start of a fragment of the log file for later copy
@@ -2319,10 +2313,9 @@ class GlobalCommands(ScriptableObject):
 		description=_("Opens NVDA configuration directory for the current user."),
 		category=SCRCAT_TOOLS
 	)
+	@gui.blockAction.when(gui.blockAction.Context.SECURE_MODE)
 	def script_openUserConfigurationDirectory(self, gesture):
 		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
 			return
 		import systemUtils
 		systemUtils.openUserConfigurationDirectory()
@@ -2687,16 +2680,11 @@ class GlobalCommands(ScriptableObject):
 		category=SCRCAT_TOOLS,
 		gesture="kb:NVDA+control+z"
 	)
+	@gui.blockAction.when(
+		gui.blockAction.Context.WINDOWS_STORE_VERSION,
+		gui.blockAction.Context.SECURE_MODE
+	)
 	def script_activatePythonConsole(self,gesture):
-		if globalVars.appArgs.secure:
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
-			return
-		if config.isAppX:
-			# Translators: Reported when an action cannot be performed because NVDA has been installed
-			# from the Windows Store.
-			ui.message(_("Not available in Windows Store version"))
-			return
 		import pythonConsole
 		if not pythonConsole.consoleUI:
 			pythonConsole.initialize()
