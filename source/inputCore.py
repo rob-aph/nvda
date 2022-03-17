@@ -381,6 +381,9 @@ class GlobalGestureMap(object):
 		@precondition: L{load} must have been called.
 		"""
 		if globalVars.appArgs.secure:
+			import ui
+			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+			ui.message(_("Not available in secure context"))
 			return
 		if not self.fileName:
 			raise ValueError("No file name")

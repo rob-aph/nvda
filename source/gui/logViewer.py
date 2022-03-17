@@ -1,12 +1,12 @@
-#gui/logViewer.py
-#A part of NonVisual Desktop Access (NVDA)
-#This file is covered by the GNU General Public License.
-#See the file COPYING for more details.
-# Copyright (C) 2008-2020 NV Access Limited
+# A part of NonVisual Desktop Access (NVDA)
+# This file is covered by the GNU General Public License.
+# See the file COPYING for more details.
+# Copyright (C) 2008-2022 NV Access Limited
 
 """Provides functionality to view the NVDA log.
 """
 
+import ui
 import wx
 import globalVars
 import gui
@@ -110,6 +110,8 @@ def activate():
 	global logViewer
 	if globalVars.appArgs.secure:
 		# The log might expose sensitive information and the Save As dialog in the Log Viewer is a security risk.
+		# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+		ui.message(_("Not available in secure context"))
 		return
 	if not logViewer:
 		logViewer = LogViewer(gui.mainFrame)

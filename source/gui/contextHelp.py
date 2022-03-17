@@ -7,6 +7,7 @@ import os
 import tempfile
 import typing
 
+import ui
 import wx
 from logHandler import log
 import documentationUtils
@@ -75,6 +76,8 @@ def bindHelpEvent(helpId: str, window: wx.Window):
 
 def _onEvtHelp(helpId: str, evt: wx.HelpEvent):
 	if globalVars.appArgs.secure:
+		# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
+		ui.message(_("Not available in secure context"))
 		# Disable context help in secure screens to avoid opening a browser with system-wide privileges.
 		return
 	# Don't call evt.skip. Events bubble upwards through parent controls.
