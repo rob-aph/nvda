@@ -727,15 +727,13 @@ class ConfigManager(object):
 		self._initBaseConf(factoryDefaults=factoryDefaults)
 		post_configReset.notify(factoryDefaults=factoryDefaults)
 
-	def createProfile(self, name: str) -> None:
+	def createProfile(self, name):
 		"""Create a profile.
 		@param name: The name of the profile to create.
+		@type name: str
 		@raise ValueError: If a profile with this name already exists.
 		"""
 		if globalVars.appArgs.secure:
-			import ui
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
 			return
 		if not name:
 			raise ValueError("Missing name.")
@@ -749,15 +747,13 @@ class ConfigManager(object):
 		from globalCommands import ConfigProfileActivationCommands
 		ConfigProfileActivationCommands.addScriptForProfile(name)
 
-	def deleteProfile(self, name: str) -> None:
+	def deleteProfile(self, name):
 		"""Delete a profile.
 		@param name: The name of the profile to delete.
+		@type name: str
 		@raise LookupError: If the profile doesn't exist.
 		"""
 		if globalVars.appArgs.secure:
-			import ui
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
 			return
 		fn = self._getProfileFn(name)
 		if not os.path.isfile(fn):
@@ -798,17 +794,16 @@ class ConfigManager(object):
 				if trigger._profile == delProfile:
 					del self._suspendedTriggers[trigger]
 
-	def renameProfile(self, oldName: str, newName: str) -> None:
+	def renameProfile(self, oldName, newName):
 		"""Rename a profile.
 		@param oldName: The current name of the profile.
+		@type oldName: str
 		@param newName: The new name for the profile.
+		@type newName: str
 		@raise LookupError: If the profile doesn't exist.
 		@raise ValueError: If a profile with the new name already exists.
 		"""
 		if globalVars.appArgs.secure:
-			import ui
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
 			return
 		if newName == oldName:
 			return
@@ -988,9 +983,7 @@ class ConfigManager(object):
 		This should be called whenever L{profilesToTriggers} is modified.
 		"""
 		if globalVars.appArgs.secure:
-			import ui
-			# Translators: Reported when an action cannot be performed because NVDA is in a secure screen
-			ui.message(_("Not available in secure context"))
+			# Never save if running securely.
 			return
 		self.triggersToProfiles.parent.write()
 		log.info("Profile triggers saved")
