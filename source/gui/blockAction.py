@@ -13,7 +13,6 @@ import ui
 from gui.message import isModalMessageBoxActive
 
 
-
 @dataclass
 class _Context:
 	blockActionIf: Callable[[], bool]
