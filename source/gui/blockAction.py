@@ -40,6 +40,11 @@ class Context(_Context, Enum):
 
 
 def when(*contexts: Context):
+	"""Returns a function wrapper.
+	A function wrapped with `when` will exit early if any supplied context in `contexts` is active.
+	For example, a function wrapped with `@when(Context.SECURE_MODE)` will return early
+	if secure mode is active.
+	"""
 	def _wrap(func):
 		@wraps(func)
 		def funcWrapper(*args, **kwargs):
