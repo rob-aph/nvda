@@ -294,6 +294,16 @@ class EditableText(TextContainerObject,ScriptableObject):
 	def script_caret_deleteWord(self, gesture):
 		self._deleteScriptHelper(textInfos.UNIT_WORD, gesture)
 
+	def script_caret_previousParagraph(self, gesture):
+		from blockParagraphHelper import moveToBlockParagraph
+		if not moveToBlockParagraph(False):
+			self.script_caret_moveByParagraph(gesture)
+
+	def script_caret_nextParagraph(self, gesture):
+		from blockParagraphHelper import moveToBlockParagraph
+		if not moveToBlockParagraph(True):
+			self.script_caret_moveByParagraph(gesture)
+	
 	__gestures = {
 		"kb:upArrow": "caret_moveByLine",
 		"kb:downArrow": "caret_moveByLine",
@@ -303,8 +313,8 @@ class EditableText(TextContainerObject,ScriptableObject):
 		"kb:pageDown": "caret_moveByLine",
 		"kb:control+leftArrow": "caret_moveByWord",
 		"kb:control+rightArrow": "caret_moveByWord",
-		"kb:control+upArrow": "caret_moveByParagraph",
-		"kb:control+downArrow": "caret_moveByParagraph",
+		"kb:control+upArrow": "caret_previousParagraph",
+		"kb:control+downArrow": "caret_nextParagraph",
 		"kb:alt+upArrow": "caret_previousSentence",
 		"kb:alt+downArrow": "caret_nextSentence",
 		"kb:home": "caret_moveByCharacter",
