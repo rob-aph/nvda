@@ -38,7 +38,7 @@ def readCurrentParagraph(ti):
 
 	speech.speakMessage(paragraph)
 
-def moveToBlockParagraph(next):
+def moveToBlockParagraph(next: bool, read: bool):
 	MAX_LINES = 250  # give up after searching this many lines
 	ti = getTextInfoAtCaret()
 	if ti is None:
@@ -74,7 +74,8 @@ def moveToBlockParagraph(next):
 
 	if moved:
 		ti.updateCaret()
-		readCurrentParagraph(ti)
+		if read:
+			readCurrentParagraph(ti)
 	else:
 		tones.beep(1000, 30)
 
