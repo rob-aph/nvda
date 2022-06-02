@@ -232,7 +232,6 @@ class EditableText(TextContainerObject,ScriptableObject):
 
 	def script_caret_moveByParagraph(self,gesture):
 		self._caretMovementScriptHelper(gesture, textInfos.UNIT_PARAGRAPH)
-	script_caret_moveByParagraph.resumeSayAllMode = sayAll.CURSOR.CARET
 
 	def script_caret_previousSentence(self,gesture):
 		self._caretMoveBySentenceHelper(gesture, -1)
@@ -298,11 +297,13 @@ class EditableText(TextContainerObject,ScriptableObject):
 		from blockParagraphHelper import moveToBlockParagraph
 		if not moveToBlockParagraph(False):
 			self.script_caret_moveByParagraph(gesture)
+	script_caret_previousParagraph.resumeSayAllMode = sayAll.CURSOR.CARET
 
 	def script_caret_nextParagraph(self, gesture):
 		from blockParagraphHelper import moveToBlockParagraph
 		if not moveToBlockParagraph(True):
 			self.script_caret_moveByParagraph(gesture)
+	script_caret_nextParagraph.resumeSayAllMode = sayAll.CURSOR.CARET
 	
 	__gestures = {
 		"kb:upArrow": "caret_moveByLine",
